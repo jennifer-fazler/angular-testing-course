@@ -1,33 +1,35 @@
 import { CalculatorService } from "./calculator.service";
 import { LoggerService } from "./logger.service";
 
-describe('CalculatorService', () => {
+describe("CalculatorService", () => {
+  let calculator: CalculatorService, loggerSpy: any;
 
-   // meant to test a functional feature, not a technical spec
-  it('should add two numbers', () => {
-    // const logger = new LoggerService(); // ususally we want to provide mock or fake services for the unit test
+  beforeEach(() => {
+    console.log("Calling beforeEach");
 
-    // this is a complete fake object
-    const logger = jasmine.createSpyObj('LoggerService', ["log"]);
+    loggerSpy = jasmine.createSpyObj("LoggerService", ["log"]);
 
-    const calculator = new CalculatorService(logger);
+    calculator = new CalculatorService(loggerSpy);
+  });
 
-    // now not needed because jasmine will automatically spy on the spyobj
-    // spyOn(logger, 'log');
+  // meant to test a functional feature, not a technical spec
+  it("should add two numbers", () => {
+    console.log("add test");
 
-    const result = calculator.add(2,2);
+    const result = calculator.add(2, 2);
 
     expect(result).toBe(4);
 
-    expect(logger.log).toHaveBeenCalledTimes(1);
+    expect(loggerSpy.log).toHaveBeenCalledTimes(1);
   });
 
-  it('should subtract two numbers', () => {
-    const calculator = new CalculatorService(new LoggerService());
+  it("should subtract two numbers", () => {
+    console.log("subtract test");
 
-    const result = calculator.subtract(2,2);
+    const result = calculator.subtract(2, 2);
 
     expect(result).toBe(0, "unexpected subtraction result");
-  });
 
+    expect(loggerSpy.log).toHaveBeenCalledTimes(1);
+  });
 });
