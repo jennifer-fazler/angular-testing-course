@@ -1,4 +1,4 @@
-import { fakeAsync, flush, tick } from "@angular/core/testing";
+import { fakeAsync, flush, flushMicrotasks, tick } from "@angular/core/testing";
 
 fdescribe("Async Testing Examples", () => {
   // This approach should be avoided.  Hard to know how long to wait, and might exceed timeout. nested timeout blocks, etc
@@ -44,18 +44,10 @@ fdescribe("Async Testing Examples", () => {
     expect(test).toBeTruthy();
   }));
 
-  fit("Asynchronous test example - plain Promise", () => {
+  fit("Asynchronous test example - plain Promise", fakeAsync(() => {
     let test = false;
 
     console.log("Creating promise");
-
-    setTimeout(() => {
-      console.log("setTimeout() first callback triggered");
-    });
-
-    setTimeout(() => {
-      console.log("setTimeout() second callback triggered");
-    });
 
     Promise.resolve().then(() => {
       console.log("Promise first then() evaluated successfully");
@@ -68,8 +60,10 @@ fdescribe("Async Testing Examples", () => {
       test = true;
     });
 
+    flushMicrotasks();
+
     console.log("Running test assertions");
 
     expect(test).toBeTruthy();
-  });
+  }));
 });
