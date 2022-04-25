@@ -90,11 +90,7 @@ describe("HomeComponent", () => {
     expect(tabs.length).toBe(2, "Expect to find 2 tabs");
   });
 
-  it("should display advanced courses when tab clicked", () => {
-
-    //TODO: fix this test in the next section
-    pending();
-
+  it("should display advanced courses when tab clicked", (done: DoneFn) => {
     coursesService.findAllCourses.and.returnValue(of(setupCourses()));
 
     fixture.detectChanges();
@@ -103,13 +99,24 @@ describe("HomeComponent", () => {
 
     click(tabs[1]); // Simulate click on Advanced tab button
 
+  // This works but we would prefer to test it in a more similar way to what Angular will be doing
+    setTimeout(() => {
+      fixture.detectChanges();
+
+      const cardTitles = el.queryAll(By.css(".mat-card-title"));
+
+      expect(cardTitles.length).toBeGreaterThan(
+        0,
+        "Could not find the card titles"
+      );
+
+      expect(cardTitles[0].nativeElement.textContent).toContain(
+        "Angular Security Course"
+      );
+
+      done();
+    }, 500);
+
     fixture.detectChanges();
-
-    const cardTitles = el.queryAll(By.css('.mat-card-title'));
-
-    expect(cardTitles.length).toBeGreaterThan(0, "Could not find the card titles");
-
-    expect(cardTitles[0].nativeElement.textContent).toContain("Angular Security Course");
-
   });
 });
