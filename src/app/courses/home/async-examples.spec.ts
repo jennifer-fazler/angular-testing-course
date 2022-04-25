@@ -1,4 +1,6 @@
 import { fakeAsync, flush, flushMicrotasks, tick } from "@angular/core/testing";
+import { of } from "rxjs";
+import { delay } from "rxjs/operators";
 
 fdescribe("Async Testing Examples", () => {
   // This approach should be avoided.  Hard to know how long to wait, and might exceed timeout. nested timeout blocks, etc
@@ -87,4 +89,25 @@ fdescribe("Async Testing Examples", () => {
     tick(500); // timeout will be executed
     expect(counter).toBe(11);
   }));
+
+  it('Asynchronous test example - Observables', fakeAsync(() => {
+    let test = false;
+
+    console.log('Creating Observable');
+
+    const test$ = of(test).pipe(delay(1000));
+
+    test$.subscribe(() => {
+      test = true;
+    });
+
+    tick(1000);
+
+    console.log('Running test assertions');
+
+    expect(test).toBe(true);
+  }));
+
+
+
 });
