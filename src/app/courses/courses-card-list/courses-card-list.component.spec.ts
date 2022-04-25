@@ -1,54 +1,55 @@
-import {async, ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
-import {CoursesCardListComponent} from './courses-card-list.component';
-import {CoursesModule} from '../courses.module';
-import {COURSES} from '../../../../server/db-data';
-import {DebugElement} from '@angular/core';
-import {By} from '@angular/platform-browser';
-import {sortCoursesBySeqNo} from '../home/sort-course-by-seq';
-import {Course} from '../model/course';
-import {setupCourses} from '../common/setup-test-data';
+import {
+  async,
+  ComponentFixture,
+  TestBed,
+  waitForAsync,
+} from "@angular/core/testing";
+import { CoursesCardListComponent } from "./courses-card-list.component";
+import { CoursesModule } from "../courses.module";
+import { COURSES } from "../../../../server/db-data";
+import { DebugElement } from "@angular/core";
+import { By } from "@angular/platform-browser";
+import { sortCoursesBySeqNo } from "../home/sort-course-by-seq";
+import { Course } from "../model/course";
+import { setupCourses } from "../common/setup-test-data";
 
-
-
-
-describe('CoursesCardListComponent', () => {
-
+describe("CoursesCardListComponent", () => {
   let component: CoursesCardListComponent;
   let fixture: ComponentFixture<CoursesCardListComponent>;
+  let el: DebugElement;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [CoursesModule]
+      imports: [CoursesModule],
     })
       .compileComponents()
       .then(() => {
         fixture = TestBed.createComponent(CoursesCardListComponent);
         component = fixture.componentInstance;
+        el = fixture.debugElement;
       });
   }));
 
   it("should create the component", () => {
-
     expect(component).toBeTruthy();
 
     // console.log(component);
   });
 
-
   it("should display the course list", () => {
+    component.courses = setupCourses(); // Happens synchronously
 
-    pending();
+    fixture.detectChanges(); // Have to let component know to check for changes
 
+    console.log(el.nativeElement.outerHTML);
+
+    const cards = el.queryAll(By.css(".course-card"));
+
+    expect(cards).toBeTruthy("Could not find cards");
+    expect(cards.length).toBe(12, "Unexpected number of course");
   });
-
 
   it("should display the first course", () => {
-
-      pending();
-
+    pending();
   });
-
-
 });
-
-
