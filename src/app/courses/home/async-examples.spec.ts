@@ -44,26 +44,47 @@ fdescribe("Async Testing Examples", () => {
     expect(test).toBeTruthy();
   }));
 
-  fit("Asynchronous test example - plain Promise", fakeAsync(() => {
+  it("Asynchronous test example - plain Promise", fakeAsync(() => {
     let test = false;
 
     console.log("Creating promise");
 
-    Promise.resolve().then(() => {
-      console.log("Promise first then() evaluated successfully");
+    Promise.resolve()
+      .then(() => {
+        console.log("Promise first then() evaluated successfully");
 
-      return Promise.resolve();
-    })
-    .then(() => {
-      console.log("Promise second then() evaluated successfully");
+        return Promise.resolve();
+      })
+      .then(() => {
+        console.log("Promise second then() evaluated successfully");
 
-      test = true;
-    });
+        test = true;
+      });
 
     flushMicrotasks();
 
     console.log("Running test assertions");
 
     expect(test).toBeTruthy();
+  }));
+
+  it("Asynchronouse test example - Promises + setTimeout()", fakeAsync(() => {
+    let counter = 0;
+
+    Promise.resolve().then(() => {
+      counter += 10;
+
+      setTimeout(() => {
+        counter += 1;
+      }, 1000);
+    });
+
+    expect(counter).toBe(0);
+    flushMicrotasks(); // empty just the microtask queue & not the major tasks
+    expect(counter).toBe(10);
+    tick(500);
+    expect(counter).toBe(10); // still have not triggered timeout
+    tick(500); // timeout will be executed
+    expect(counter).toBe(11);
   }));
 });
