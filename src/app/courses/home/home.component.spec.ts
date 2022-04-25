@@ -1,5 +1,4 @@
 import {
-  async,
   ComponentFixture,
   fakeAsync,
   flush,
@@ -28,22 +27,28 @@ describe("HomeComponent", () => {
   let fixture: ComponentFixture<HomeComponent>;
   let component: HomeComponent;
   let el: DebugElement;
+  let coursesService: any;
+
+  const beginnerCourse = setupCourses().filter(
+    (course) => course.category == "BEGINNER"
+  );
 
   beforeEach(waitForAsync(() => {
-
-    const coursesServiceSpy = jasmine.createSpyObj('CoursesService', ['findAllCourses']);
+    const coursesServiceSpy = jasmine.createSpyObj("CoursesService", [
+      "findAllCourses",
+    ]);
 
     TestBed.configureTestingModule({
       imports: [CoursesModule, NoopAnimationsModule],
-      providers: [
-        {provide: CoursesService, useValue: coursesServiceSpy}
-      ]
-    }).compileComponents()
-    .then(() => {
-      fixture = TestBed.createComponent(HomeComponent);
-      component = fixture.componentInstance;
-      el = fixture.debugElement;
-    });
+      providers: [{ provide: CoursesService, useValue: coursesServiceSpy }],
+    })
+      .compileComponents()
+      .then(() => {
+        fixture = TestBed.createComponent(HomeComponent);
+        component = fixture.componentInstance;
+        el = fixture.debugElement;
+        coursesService = TestBed.inject(CoursesService);
+      });
   }));
 
   it("should create the component", () => {
@@ -51,7 +56,13 @@ describe("HomeComponent", () => {
   });
 
   it("should display only beginner courses", () => {
-    pending();
+    coursesService.findAllCourses.and.returnValue(of(beginnerCourse));
+
+    fixture.detectChanges();
+
+    const tabs = el.queryAll(By.css(".mat-tab-label"));
+
+    expect(tabs.length).toBe(1, "Unexpected number of tabs found");
   });
 
   it("should display only advanced courses", () => {
